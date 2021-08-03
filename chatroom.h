@@ -18,7 +18,6 @@
 #include <sys/poll.h>
 #include <sys/epoll.h>
 #include <pthread.h>
-#include "cJSON.h"
 #include <sys/sendfile.h>
 #include<time.h>
 #include <mysql/mysql.h>
