@@ -177,7 +177,7 @@ void *nextst()
         tiao++;
         printf("---欢迎来到简单的聊天室---\n");
         printf("-----welcome %s------\n", send_pack->send_name);
-       printf("----------------  ----------------\n");
+        printf("----------------  ----------------\n");
         printf("|好友和通用功能|");
         printf("  |群聊天及其功能|\n");
         printf("----------------  ----------------\n");
@@ -206,7 +206,8 @@ void *nextst()
             printf("***你有新的消息，快去消息中心处理吧***\n");
         }
         printf("----------------------------\n");
-        scanf("%c%c", &send_pack->cho, &send_pack->cho);
+        fflush(stdin);
+        scanf("%s", &send_pack->cho, &send_pack->cho);
         switch (send_pack->cho)
         {
         case 'd':
@@ -275,13 +276,13 @@ void *nextst()
             break;
         case '\n':
         {
-            tiao == 0;
+            tiao = 0;
             break;
         }
         default:
         {
             printf("无效输入，请重试\n");
-            tiao == 0;
+            tiao = 0;
             break;
         }
         }
@@ -410,7 +411,7 @@ void recvs() //收数据包
             for (int i = 0; i < sum; i++)
             {
                 recv(sock_fd, (void *)grohead, sizeof(groupnode), 0);
-                printf("群号:%s 成员:%s  权限：%d\n",recv_pack->nums,grohead->name,grohead->id);
+                printf("群号:%s 成员:%s  权限：%d\n", recv_pack->nums, grohead->name, grohead->id);
             }
             break;
         }
@@ -448,7 +449,7 @@ void recvs() //收数据包
                 if (strcmp(send_pack->work, "~exit") == 0)
                     flag = 0;
                 if (flag == 0)
-                {   
+                {
                     pthread_cancel(groupid);
                     break;
                 }
