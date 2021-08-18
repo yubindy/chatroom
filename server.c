@@ -671,7 +671,7 @@ void recv_t(pack *s, int fd)
 }
 void recv_file(pack *recv_pack)
 {
-    char s[200], file[100];
+    char s[200], file[200];
     int fd, flag;
     int t = 0;
     off_t st;
@@ -721,7 +721,7 @@ void recv_file(pack *recv_pack)
     recv_t(recv_pack, recv_pack->send_id);
     if (strcmp(recv_pack->work, "yes") == 0)
     {
-        sprintf(s, "update file set id=0 where file_name=\'%s\' and id>0", file);
+        sprintf(s, "update files set id=0 where file_name=\'%s\' and id>0", file);
         mysql_in_del(s);
     }
     ep_id.data.fd = recv_pack->send_id;
