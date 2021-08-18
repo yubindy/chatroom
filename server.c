@@ -93,12 +93,12 @@ void send_file(pack *recv_pack)
 {
     char files[100], rands[20];
     char s[200];
-    char sizefile[1024];
+    char sizefile[4096];
     int fd, filesize, nfs, number = 0;
     struct epoll_event ep_id;
-    int recvsize = 1023;
+    int recvsize = 4096;
     filesize = recv_pack->id;
-    nfs = filesize / 1023 + 1;
+    nfs = filesize / 4096 + 1;
     getcwd(files, sizeof(files));
     memset(rands, 0, sizeof(rands));
     rand_file(rands);
@@ -112,9 +112,9 @@ void send_file(pack *recv_pack)
     mysql_in_del(s);
     while (nfs--)
     {
-        if (filesize < 1023)
+        if (filesize < 4096)
             recvsize = filesize;
-        filesize -= 1023;
+        filesize -= 4096;
         recv(recv_pack->send_id, sizefile, recvsize, 0);
         fd = open(files, O_WRONLY | O_CREAT | O_APPEND, 0644);
         write(fd, sizefile, recvsize);
@@ -722,6 +722,7 @@ void recv_file(pack *recv_pack)
     if (strcmp(recv_pack->work, "yes") == 0)
     {
         sprintf(s, "update file set id=0 where file_name=\'%s\' and id>0", file);
+        mysql_in_del(s);
     }
     ep_id.data.fd = recv_pack->send_id;
     ep_id.events = EPOLLIN;
