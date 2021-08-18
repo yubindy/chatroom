@@ -71,17 +71,19 @@ void cli_sendfile() //文件传输
     int fd;
     off_t t = 0;
     struct stat buf;
-    printf("请输入接收文件的名字：");
+    char s[200];
+    printf("请输入用户的名字：");
     scanf("%s", send_pack->recv_name);
     printf("请输入需要传输文件地址：");
-    scanf("%s", send_pack->work);
-    if ((fd = open(send_pack->work, O_RDONLY)) < 0)
+    scanf("%s", s);
+    if ((fd = open(s, O_RDONLY)) < 0)
     {
         perror("open");
         tiao = 0;
         return;
     }
     fstat(fd, &buf);
+    strncpy(send_pack->work,s,50);
     send_pack->id = buf.st_size;
     send_t(send_pack, sock_fd);
     sendfile(sock_fd, fd, &t, buf.st_size);
@@ -484,11 +486,11 @@ void recvs() //收数据包
                 break;
             }
             int fd, nfs, filesize;
-            char files[100], rands[20];
-            char sizefile[1023];
-            int recvsize = 1023;
+            char files[150], rands[20];
+            char sizefile[4096];
+            int recvsize = 4096;
             filesize = recv_pack->id;
-            nfs = filesize / 1023 + 1;
+            nfs = filesize / 4096 + 1;
             getcwd(files, sizeof(files));
             memset(rands, 0, sizeof(rands));
             rand_file(rands);
@@ -496,9 +498,9 @@ void recvs() //收数据包
             strncat(files, rands, sizeof(rands));
             while (nfs--)
             {
-                if (filesize < 1023)
+                if (filesize < 4096)
                     recvsize = filesize;
-                filesize -= 1023;
+                filesize -= 4096;
                 recv(sock_fd, sizefile, recvsize, 0);
                 fd = open(files, O_WRONLY | O_CREAT | O_APPEND, 0644);
                 write(fd, sizefile, recvsize);
